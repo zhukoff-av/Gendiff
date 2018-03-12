@@ -1,0 +1,45 @@
+{
+  "name": "gendiff",
+  "version": "0.0.1",
+  "description": "Compares two configuration files and shows a difference.",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "babel-node": "babel-node",
+    "build": "NODE_ENV=production babel src --out-dir dist --source-maps inline",
+    "prepublishOnly": "npm run build",
+    "eslint": "eslint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhukoff-av/project-lvl2-s225.git"
+  },
+  "keywords": [
+    "gendiff"
+  ],
+  "author": "Anton Zhukov",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zhukoff-av/project-lvl2-s225/issues"
+  },
+  "homepage": "https://github.com/zhukoff-av/project-lvl2-s225#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^8.0.2",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "eslint": "^4.11.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jest": "^21.7.0",
+    "jest": "^22.1.4",
+    "jest-cli": "^22.1.4"
+  },
+  "dependencies": {
+    "commander": "^2.15.0",
+    "ini": "^1.3.5",
+    "js-yaml": "^3.11.0",
+    "lodash": "^4.17.5"
+  }
+}
