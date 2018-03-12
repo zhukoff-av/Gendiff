@@ -1,5 +1,5 @@
 {
-  "name": "gendiff",
+  "name": "gendiff-az",
   "version": "0.0.1",
   "description": "Compares two configuration files and shows a difference.",
   "main": "index.js",
