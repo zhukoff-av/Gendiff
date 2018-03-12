@@ -1,8 +1,14 @@
 {
   "name": "gendiff-az",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "Compares two configuration files and shows a difference.",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "bin": {
+    "gendiff": "dist/bin/gendiff.js"
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "test": "jest",
     "babel-node": "babel-node",
