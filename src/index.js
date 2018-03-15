@@ -1,31 +1,36 @@
 import _ from 'lodash';
+import path from 'path';
 import fs from 'fs';
+import parsing from './parse';
 
-const getData = path => JSON.parse(fs.readFileSync(path));
-const genDiff = (pathToFile1, pathToFile2) => {
-  const file1 = getData(pathToFile1);
-  const file2 = getData(pathToFile2);
-  const key1 = Object.keys(file1);
-  const key2 = Object.keys(file2);
-  const keys = _.union(key1, key2);
+const genDiff = (pathToFileA, pathToFileB) => {
+  const dataA = fs.readFileSync(pathToFileA, 'utf8');
+  const dataB = fs.readFileSync(pathToFileB, 'utf8');
+  const extensionOfPathA = path.extname(pathToFileA);
+  const extensionOfPathB = path.extname(pathToFileB);
+  const parseA = parsing(extensionOfPathA);
+  const parseB = parsing(extensionOfPathB);
+  const fileA = parseA(dataA);
+  const fileB = parseB(dataB);
+  const keys = _.union(_.keys(fileA), _.keys(fileB));
   return keys.reduce((acc, key) => {
-    const objectFirst = file1[key];
-    const objectSecond = file2[key];
+    const objectFirst = fileA[key];
+    const objectSecond = fileB[key];
     if (objectFirst && objectSecond) {
       if (objectFirst === objectSecond) {
-        return `${acc}  ${key}: ${file1[key]}\r\n`;
+        return [...acc, `  ${key}: ${fileA[key]}`];
       }
       if (objectFirst !== objectSecond) {
-        return `${acc}+ ${key}: ${file2[key]}\r\n- ${key}: ${file1[key]}\r\n`;
+        return [...acc, `+ ${key}: ${fileB[key]}`, `- ${key}: ${fileA[key]}`];
       }
     }
     if (objectFirst && !objectSecond) {
-      return `${acc}- ${key}: ${file1[key]}\r\n`;
+      return [...acc, `- ${key}: ${fileA[key]}`];
     }
     if (!objectFirst && objectSecond) {
-      return `${acc}+ ${key}: ${file2[key]}\r\n`;
+      return [...acc, `+ ${key}: ${fileB[key]}`];
     }
     return '';
-  }, '');
+  }, []).join('\n');
 };
 export default genDiff;
