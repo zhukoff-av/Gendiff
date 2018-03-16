@@ -8,14 +8,21 @@ const pathToIniB = '__tests__/__fixtures__/after.ini';
 const pathToYmlA = '__tests__/__fixtures__/before.yml';
 const pathToYmlB = '__tests__/__fixtures__/after.yml';
 
+const pathToTreeA = '__tests__/__fixtures__/before_tree.json';
+const pathToTreeB = '__tests__/__fixtures__/after_tree.json';
+
 test('JSON diff', () => {
-  expect(genDiff(pathToJsonA, pathToJsonB)).toEqual(fs.readFileSync('__tests__/__fixtures__/expectedResult.txt', 'utf8'));
+  expect(genDiff(pathToJsonA, pathToJsonB)).toEqual(fs.readFileSync('__tests__/__fixtures__/result.txt', 'utf8'));
 });
 
 test('Yml diff', () => {
-  expect(genDiff(pathToYmlA, pathToYmlB)).toEqual(fs.readFileSync('__tests__/__fixtures__/expectedResult.txt', 'utf8'));
+  expect(genDiff(pathToYmlA, pathToYmlB)).toEqual(fs.readFileSync('__tests__/__fixtures__/result.txt', 'utf8'));
 });
 
 test('Ini diff', () => {
-  expect(genDiff(pathToIniA, pathToIniB)).toEqual(fs.readFileSync('__tests__/__fixtures__/expectedResult.txt', 'utf8'));
+  expect(genDiff(pathToIniA, pathToIniB)).toEqual(fs.readFileSync('__tests__/__fixtures__/result.txt', 'utf8'));
+});
+
+test('diff ast', () => {
+  expect(genDiff(pathToTreeA, pathToTreeB)).toEqual(fs.readFileSync('__tests__/__fixtures__/result_tree_json.txt', 'utf8'));
 });
