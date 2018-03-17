@@ -30,3 +30,7 @@ test('Ast diff', () => {
 test('Plain diff', () => {
   expect(genDiff(pathToTreeA, pathToTreeB, renderers.plain)).toEqual(fs.readFileSync('__tests__/__fixtures__/result_plain.txt', 'utf8'));
 });
+
+test('json output', () => {
+  expect(genDiff(pathToTreeA, pathToTreeB, renderers.json)).toEqual(fs.readFileSync('__tests__/__fixtures__/result_format_json.txt', 'utf8'));
+});

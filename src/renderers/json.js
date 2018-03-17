@@ -1,3 +1,3 @@
-const parseAst = (ast) => { parseAst(ast); };
+const renderJson = ast => JSON.stringify(ast);
 
-export default parseAst;
+export default renderJson;
