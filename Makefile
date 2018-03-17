@@ -8,7 +8,7 @@ publish:
 	npm publish
 
 test:
-	npm test -- --watch
+	npm test
 
 lint:
 		npm run eslint .
