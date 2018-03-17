@@ -1,9 +1,13 @@
-import treeRender from './tree';
-import jsonRender from './json';
-import plainRender from './plain';
+import renderPlain from './plain';
+import renderTree from './tree';
+import renderJson from './json';
 
-export default {
-  default: treeRender,
-  json: jsonRender,
-  plain: plainRender,
+const chooseRender = {
+  plain: renderPlain,
+  undefined: renderTree,
+  json: renderJson,
 };
+
+const render = type => chooseRender[type];
+
+export default render;

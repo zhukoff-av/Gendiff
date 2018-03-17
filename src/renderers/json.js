@@ -1,3 +1,6 @@
-const renderJson = ast => JSON.stringify(ast);
+const renderToJson = (ast) => {
+  const result = JSON.stringify(ast);
+  return `${result}\n`;
+};
 
-export default renderJson;
+export default renderToJson;

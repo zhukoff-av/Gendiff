@@ -1,48 +1,43 @@
-import _ from 'lodash';
+const renderToTree = (ast) => {
+  const iter = (data, indentLvl) => {
+    const indent = ' '.repeat(indentLvl);
+    const indForValue = ' '.repeat(indentLvl + 6);
+    const indForBrace = ' '.repeat(indentLvl + 2);
 
-const renderTypes = [
-  {
-    type: 'inserted',
-    render: (key, value) => `+ ${key}: ${value}`,
-  },
-  {
-    type: 'deleted',
-    render: (key, value) => `- ${key}: ${value}`,
-  },
-  {
-    type: 'changed',
-    render: (key, value, tabsSpace) => `+ ${key}: ${value.new}\n${tabsSpace}- ${key}: ${value.old}`,
-  },
-  {
-    type: 'not changed',
-    render: (key, value) => `  ${key}: ${value}`,
-  },
-];
+    const objToString = (arg) => {
+      const keys = Object.keys(arg);
+      const arr = keys.map(key => (arg[key] instanceof Object ? objToString(arg[key]) :
+        `${key}: ${arg[key]}`));
 
-const objectRender = (node, tabsGroupElement) => Object.keys(node).map(key => `${tabsGroupElement}${key}: ${node[key]}`).join('\n');
-const nodeobjectRender = (tabsDiff, node, tabsGroupElement, tabsSpace) => {
-  const sign = (node.type === 'deleted') ? '-' : '+';
-  return `${tabsDiff}${sign} ${node.name}: {\n${objectRender(node.value, tabsGroupElement)}\n${tabsSpace}}`;
+      return arr.join(`\n ${' '.repeat(indentLvl + 4)} `);
+    };
+
+    const valueToString = (value) => {
+      const stringForComplex = ` {\n${indForValue}${objToString(value)}\n${indForBrace}}`;
+      const stringForSimple = ` ${value}`;
+      return value instanceof Object ? stringForComplex : stringForSimple;
+    };
+
+    const stringAction = {
+      nested: node =>
+        `${indent}  ${node.key}: {\n${iter(node.children, indentLvl + 4)}\n${indForBrace}}`,
+      unchanged: node =>
+        `${indent}  ${node.key}:${valueToString(node.valueAfter)}`,
+      added: node =>
+        `${indent}+ ${node.key}:${valueToString(node.valueAfter)}`,
+      removed: node =>
+        `${indent}- ${node.key}:${valueToString(node.valueBefore)}`,
+      updated: node =>
+        [`${indent}- ${node.key}: ${node.valueBefore}\n${indent}+ ${node.key}: ${node.valueAfter}`],
+    };
+
+    const getString = node => stringAction[node.type](node);
+
+    const arr = data.map(node => getString(node));
+    return arr.join('\n');
+  };
+  const output = iter(ast, 2);
+  return `{\n${output}\n}\n`;
 };
 
-const renderTree = (ast, tabs = 1) => {
-  const tabsSpace = ' '.repeat(tabs * 4);
-  const tabsDiff = ' '.repeat((tabs * 4) - 2);
-  const tabsGroupElement = ' '.repeat((tabs + 1) * 4);
-  const diffText = ast.map((node) => {
-    if (node.type === 'nested') {
-      return `${tabsSpace}${node.name}: {\n${renderTree(node.children, tabs + 1)}\n${tabsSpace}}`;
-    }
-    if (node.type === 'deleted' || node.type === 'inserted') {
-      if (_.isObject(node.value)) {
-        return nodeobjectRender(tabsDiff, node, tabsGroupElement, tabsSpace);
-      }
-    }
-    const { render } = renderTypes.find(item => item.type === node.type);
-    return `${tabsDiff}${render(node.name, node.value, tabsDiff)}`;
-  });
-  return diffText.join('\n');
-};
-const renderTreeDiff = ast => `{\n${renderTree(ast)}\n}`;
-
-export default renderTreeDiff;
+export default renderToTree;

@@ -1,33 +1,28 @@
-import _ from 'lodash';
+const renderPlain = (ast) => {
+  const iter = (data, pathAcc) => {
+    const checkComplexValue = arg => (arg instanceof Object ? 'complex value' : arg);
 
-const getMainStr = (property, propertyType) => `Property '${property}' was ${propertyType}`;
-const getFromStr = (from, to) => `. From ${from} to ${to}`;
-const getWithStr = valueStr => ` with ${valueStr}`;
+    const stringAction = {
+      nested: (node) => {
+        const newPathAcc = `${pathAcc}${node.key}.`;
+        return iter(node.children, newPathAcc);
+      },
+      added: node =>
+        `Property '${pathAcc}${node.key}' was added with value: ${checkComplexValue(node.valueAfter)}`,
+      removed: node =>
+        `Property '${pathAcc}${node.key}' was removed`,
+      updated: node =>
+        `Property '${pathAcc}${node.key}' was updated. From '${node.valueBefore}' to '${node.valueAfter}'`,
+      unchanged: () => '',
+    };
 
-const renderInsertedProp = (node, property) => {
-  const valueStr = (_.isObject(node.value)) ? 'complex value' : `value: ${node.value}`;
-  return `${getMainStr(property, 'added')}${getWithStr(valueStr)}`;
-};
+    const getString = arg => stringAction[arg.type](arg);
 
-const renderPlain = (ast, prop = '') => {
-  const diffText = ast.map((node) => {
-    const property = `${prop}${node.name}`;
-    if (node.type === 'nested') {
-      return renderPlain(node.children, `${property}.`);
-    }
-    if (node.type === 'deleted') {
-      return getMainStr(property, 'removed');
-    }
-    if (node.type === 'inserted') {
-      return renderInsertedProp(node, property);
-    }
-    if (node.type === 'changed') {
-      return `${getMainStr(property, 'updated')}${getFromStr(node.value.old, node.value.new)}`;
-    }
-    return '';
-  });
-
-  return diffText.filter(el => el !== '').join('\n');
+    const result = data.map(node => getString(node)).filter(v => v);
+    return result.join('\n');
+  };
+  const output = iter(ast, '');
+  return `\n${output}\n`;
 };
 
 export default renderPlain;
