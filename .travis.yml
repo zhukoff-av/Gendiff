@@ -7,8 +7,3 @@ node_js:
 script:
   - make lint
   - make test
-skip_build:
-  - docs/*
-  - README.MD
-  - LICENSE
-  - coverage
