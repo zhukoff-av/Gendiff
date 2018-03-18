@@ -3,8 +3,8 @@ import renderTree from './tree';
 import renderJson from './json';
 
 const chooseRender = {
+  default: renderTree,
   plain: renderPlain,
-  undefined: renderTree,
   json: renderJson,
 };
 

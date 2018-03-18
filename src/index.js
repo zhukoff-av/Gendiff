@@ -96,7 +96,7 @@ const buildAst = (dataBefore, dataAfter) => {
 
 const display = resultString => resultString;
 
-const genDiff = (fileBefore, fileAfter, outputStyle) => {
+const genDiff = (fileBefore, fileAfter, type = 'default') => {
   const typeFileBefore = path.extname(fileBefore);
   const typeFileAfter = path.extname(fileAfter);
 
@@ -106,7 +106,7 @@ const genDiff = (fileBefore, fileAfter, outputStyle) => {
   const parsedDataAfter = parseData(dataAfter, typeFileAfter);
 
   const ast = buildAst(parsedDataBefore, parsedDataAfter);
-  const render = getRenderer(outputStyle);
+  const render = getRenderer(type);
   const difference = render(ast);
 
   return display(difference);
