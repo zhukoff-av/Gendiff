@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 const renderToTree = (ast) => {
   const iter = (data, indentLvl) => {
     const indent = ' '.repeat(indentLvl);
@@ -34,7 +36,7 @@ const renderToTree = (ast) => {
     const getString = node => stringAction[node.type](node);
 
     const arr = data.map(node => getString(node));
-    return arr.join('\n');
+    return _.flatten(arr).join('\n');
   };
   const output = iter(ast, 2);
   return `{\n${output}\n}\n`;
