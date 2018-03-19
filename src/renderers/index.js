@@ -5,9 +5,11 @@ import renderJson from './json';
 const chooseRender = {
   default: renderTree,
   plain: renderPlain,
-  json: renderJson,
+  json: renderJson
 };
 
-const render = type => chooseRender[type];
+const renderAst = (ast, type) => {
+  return chooseRender[type](ast);
+};
 
-export default render;
+export default renderAst;

@@ -1,45 +1,58 @@
 import _ from 'lodash';
 
-const renderToTree = (ast) => {
-  const iter = (data, indentLvl) => {
-    const indent = ' '.repeat(indentLvl);
-    const indForValue = ' '.repeat(indentLvl + 6);
-    const indForBrace = ' '.repeat(indentLvl + 2);
-
-    const objToString = (arg) => {
-      const keys = Object.keys(arg);
-      const arr = keys.map(key => (arg[key] instanceof Object ? objToString(arg[key]) :
-        `${key}: ${arg[key]}`));
-
-      return arr.join(`\n ${' '.repeat(indentLvl + 4)} `);
-    };
-
-    const valueToString = (value) => {
-      const stringForComplex = ` {\n${indForValue}${objToString(value)}\n${indForBrace}}`;
-      const stringForSimple = ` ${value}`;
-      return value instanceof Object ? stringForComplex : stringForSimple;
-    };
-
-    const stringAction = {
-      nested: node =>
-        `${indent}  ${node.key}: {\n${iter(node.children, indentLvl + 4)}\n${indForBrace}}`,
-      unchanged: node =>
-        `${indent}  ${node.key}:${valueToString(node.valueAfter)}`,
-      added: node =>
-        `${indent}+ ${node.key}:${valueToString(node.valueAfter)}`,
-      removed: node =>
-        `${indent}- ${node.key}:${valueToString(node.valueBefore)}`,
-      updated: node =>
-        [`${indent}- ${node.key}: ${node.valueBefore}\n${indent}+ ${node.key}: ${node.valueAfter}`],
-    };
-
-    const getString = node => stringAction[node.type](node);
-
-    const arr = data.map(node => getString(node));
-    return _.flatten(arr).join('\n');
-  };
-  const output = iter(ast, 2);
-  return `{\n${output}\n}\n`;
+const valueToString = (data, indentLvl) => {
+  if (_.isObject(data)) {
+    const keys = Object.keys(data);
+    const resultString = keys.map(n => `${' '.repeat(indentLvl + 6)}${n}: ${data[n]}`).join('\n');
+    return `{\n${resultString}\n${' '.repeat(indentLvl + 2)}}`;
+  }
+  return `${data}`;
 };
 
-export default renderToTree;
+const removed = (el, index) => {
+  const { name, value } = el;
+  const indentLvl = index * 2;
+  return `${' '.repeat(indentLvl)}- ${name}: ${valueToString(value, indentLvl)}`;
+};
+
+const added = (el, index) => {
+  const { name, value } = el;
+  const indentLvl = index * 2;
+  return `${' '.repeat(indentLvl)}+ ${name}: ${valueToString(value, indentLvl)}`;
+};
+
+const unchanged = (el, index) => {
+  const { name, value } = el;
+  const indentLvl = index * 2;
+  return `${' '.repeat(indentLvl + 2)}${name}: ${valueToString(value, indentLvl)}`;
+};
+
+const nested = (el, index, fn) => {
+  const { name, children } = el;
+  const indentLvl = index * 2;
+  return `${' '.repeat(indentLvl + 2)}${name}: {\n${fn(children, index + 2)}
+  ${' '.repeat(indentLvl + 2)}}`;
+};
+
+const updated = (el, index) => {
+  const { name, value1, value2 } = el;
+  const indentLvl = index * 2;
+  return [`${' '.repeat(indentLvl)}- ${name}: ${valueToString(value1, indentLvl)}`,
+    `${' '.repeat(indentLvl)}+ ${name}: ${valueToString(value2, indentLvl)}`];
+};
+
+const parserTypes = {
+  updated: updated,
+  unchanged: unchanged,
+  added: added,
+  removed: removed,
+  nested: nested
+};
+
+const renderAst = (ast, index) => {
+  const parse = (el, indentLvl) => parserTypes[el.type](el, indentLvl, renderAst);
+  const resultAst = ast.map(el => parse(el, index));
+  return _.flatten(resultAst).join(`\n`);
+};
+
+export default ast => `{\n${renderAst(ast, 1)}\n}`;
