@@ -50,8 +50,8 @@ const parserTypes = {
 };
 
 const renderAst = (ast, index) => {
-  const parse = (el, indentLvl) => parserTypes[el.type](el, indentLvl, renderAst);
-  const resultAst = ast.map(el => parse(el, index));
+  const getParser = (el, indentLvl) => parserTypes[el.type](el, indentLvl, renderAst);
+  const resultAst = ast.map(el => getParser(el, index));
   return _.flatten(resultAst).join(`\n`);
 };
 
