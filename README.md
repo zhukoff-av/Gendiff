@@ -7,3 +7,5 @@
 [![Issue Count](https://codeclimate.com/github/zhukoff-av/project-lvl2-s225/badges/issue_count.svg)](https://codeclimate.com/github/zhukoff-av/project-lvl2-s225)
 
 [![Build Status](https://travis-ci.org/zhukoff-av/project-lvl2-s225.svg?branch=master)](https://travis-ci.org/zhukoff-av/project-lvl2-s225)
+
+[![NPM](https://nodei.co/npm/gendiff-az.png?mini=true)](https://npmjs.org/package/gendiff-az)
