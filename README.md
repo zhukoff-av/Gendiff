@@ -14,6 +14,7 @@ Run:
 
 ```gendiff [options] <firstConfig> <secondConfig>```
  
+ 
  Options:
 ```
 -V, --version, output the version number
