@@ -21,3 +21,5 @@ Run:
 -h, --help, output usage information
 -f, --format [type], output format [nested, plain, json] (default is nested)
 ```
+
+[![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=zhukoff-av)](https://github.com/zhukoff-av/Gendiff/)
