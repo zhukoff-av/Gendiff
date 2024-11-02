@@ -4,7 +4,7 @@
 
 [![NPM](https://nodei.co/npm/gendiff-az.png?mini=true)](https://npmjs.org/package/gendiff-az)
 
-![Top Language](https://img.shields.io/github/languages/top/zhukoff-av/Playwright)
+![Top Language](https://img.shields.io/github/languages/top/zhukoff-av/Gendiff)
 
 Run:
 
